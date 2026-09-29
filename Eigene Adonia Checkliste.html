@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adonia Checkliste</title>
+<link rel="manifest" href="/install/adonia-checklist/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Adonia Checkliste">
+<link rel="apple-touch-icon" href="/install/adonia-checklist/icon-192.png">
+<link rel="icon" href="/install/adonia-checklist/icon-192.png">
+<meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)">
+<style>
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --border: #E2E8F0;
+  --teal: #2a9d8f;
+  --teal-dark: #238b7e;
+  --coral: #e76f51;
+  --amber: #f59e0b;
+  --danger: #dc2626;
+  --done-bg: #e8f8f5;
+  --done-fg: #15705e;
+  --done-num: #6db5a8;
+  --done-border: #b0ddd5;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #131313;
+    --foreground: #e5e2e1;
+    --card: #201f1f;
+    --muted: #1c1b1b;
+    --muted-foreground: #849495;
+    --border: #3b494b;
+    --done-bg: #12302c;
+    --done-fg: #7fd9c9;
+    --done-num: #4e8d82;
+    --done-border: #2f6157;
+    --shadow: 0 2px 12px rgba(0,0,0,0.45);
+  }
+}
+:root[data-theme="dark"] {
+  --background: #131313;
+  --foreground: #e5e2e1;
+  --card: #201f1f;
+  --muted: #1c1b1b;
+  --muted-foreground: #849495;
+  --border: #3b494b;
+  --done-bg: #12302c;
+  --done-fg: #7fd9c9;
+  --done-num: #4e8d82;
+  --done-border: #2f6157;
+  --shadow: 0 2px 12px rgba(0,0,0,0.45);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.4;
+  padding:
+    calc(16px + env(safe-area-inset-top))
+    calc(14px + env(safe-area-inset-right))
+    calc(28px + env(safe-area-inset-bottom))
+    calc(14px + env(safe-area-inset-left));
+}
+.page { max-width: 1000px; margin: 0 auto; }
+
+/* --- Kopf --- */
+.head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.head-text { flex: 1; min-width: 0; }
+h1 { font-size: 1.3rem; font-weight: 700; margin: 0 0 4px; }
+.subtitle { font-size: 0.85rem; color: var(--muted-foreground); margin: 0; }
+.head input {
+  width: 100%; font-family: inherit; background: var(--card); color: var(--foreground);
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.9rem;
+}
+.head input.t-title { font-weight: 700; margin-bottom: 6px; }
+.theme-btn {
+  flex: none; background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 0.8rem; color: var(--muted-foreground); cursor: pointer;
+  font-family: inherit; touch-action: manipulation; white-space: nowrap;
+}
+
+/* --- Hinweisleisten --- */
+.bar {
+  display: flex; align-items: flex-start; gap: 10px; border-radius: 10px;
+  padding: 10px 12px; font-size: 0.82rem; margin-bottom: 14px; line-height: 1.45;
+}
+.bar-install { background: rgba(42,157,143,0.12); border: 1px solid rgba(42,157,143,0.35); }
+.bar-warn { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.4); }
+.bar p { margin: 0; flex: 1; }
+.bar button {
+  flex: none; background: none; border: none; color: var(--muted-foreground);
+  font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0 2px; font-family: inherit;
+}
+
+/* --- Tabs --- */
+.bars { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.toggle { display: inline-flex; border-radius: 9px; overflow: hidden; border: 2px solid var(--border); }
+.toggle button {
+  padding: 7px 16px; font-size: 0.82rem; font-weight: 600; border: none; cursor: pointer;
+  background: var(--card); color: var(--muted-foreground); font-family: inherit;
+  touch-action: manipulation;
+}
+.toggle button.active { background: var(--teal); color: #fff; }
+.edit-btn {
+  padding: 7px 12px; font-size: 0.95rem; line-height: 1; border: 2px solid var(--border);
+  border-radius: 9px; background: var(--card); color: var(--muted-foreground); cursor: pointer;
+  font-family: inherit; touch-action: manipulation;
+}
+.edit-btn.on { background: var(--coral); border-color: var(--coral); color: #fff; }
+
+/* --- Fortschritt --- */
+.progress { margin-bottom: 20px; }
+.progress-label { font-size: 0.8rem; color: var(--muted-foreground); margin-bottom: 5px; }
+.progress-bar { height: 8px; background: var(--muted); border-radius: 99px; overflow: hidden; }
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--teal), var(--coral));
+  border-radius: 99px; transition: width 0.3s;
+}
+
+/* --- Tabelle --- */
+.wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; box-shadow: var(--shadow); }
+table { width: 100%; min-width: 640px; border-collapse: collapse; background: var(--card); }
+thead tr { background: var(--teal); color: #fff; }
+thead th {
+  padding: 12px 14px; text-align: left; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap;
+}
+thead th.center { text-align: center; }
+th.compact, td.compact { padding-left: 6px; padding-right: 6px; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 11px 14px; font-size: 0.9rem; vertical-align: middle; }
+td.center { text-align: center; }
+td.c-num { color: var(--muted-foreground); font-size: 0.8rem; }
+
+/* Beim Querscrollen auf dem Handy bleibt die Nummer stehen, sonst weiß man
+   nicht mehr, zu welchem Lied die Zeile gehört. Bewusst nur die Nummer statt
+   des Titels — die Spalte schrumpft auf ihren Inhalt und kostet kaum Breite.
+   Am Rechner scrollt nichts, dort ist die Regel unsichtbar.
+   Sticky-Zellen brauchen einen eigenen deckenden Hintergrund, sonst scrollt
+   der Zeileninhalt sichtbar darunter durch. */
+thead th:first-child, tbody td.c-num {
+  position: sticky; left: 0; z-index: 1;
+  width: 1%; white-space: nowrap; padding-left: 12px; padding-right: 12px;
+}
+thead th:first-child { background: var(--teal); }
+tbody td.c-num { background: var(--card); box-shadow: inset 0 -1px 0 var(--border); }
+tbody tr:last-child td.c-num { box-shadow: none; }
+/* Kante nur, solange tatsächlich gescrollt wird (Klasse setzt das Skript).
+   Ohne sie sieht der halb verdeckte Inhalt daneben wie ein Anzeigefehler aus;
+   dauerhaft gezeigt wäre es eine Linie, die die Online-Checkliste nicht hat. */
+.wrap.scrolled-x thead th:first-child::after,
+.wrap.scrolled-x tbody td.c-num::after {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 7px;
+  transform: translateX(100%); pointer-events: none;
+  background: linear-gradient(to right, rgba(0,0,0,0.16), rgba(0,0,0,0));
+}
+td.c-song { min-width: 200px; }
+td.c-note { min-width: 180px; }
+td.cue { font-size: 0.82rem; line-height: 1.4; min-width: 200px; }
+td.cue.muted { color: var(--muted-foreground); }
+
+tbody tr.done-both { background: var(--done-bg); }
+tbody tr.done-both td { color: var(--done-fg); }
+tbody tr.done-both td.c-num { color: var(--done-num); background: var(--done-bg); }
+tbody tr.done-both td.c-note textarea { color: var(--done-fg); border-bottom-color: var(--done-border); }
+
+tbody tr.klick-row { cursor: pointer; }
+tbody tr.klick-row:hover:not(.active-row) { background: rgba(42,157,143,0.07); }
+tbody tr.active-row { background: rgba(42,157,143,0.35); box-shadow: inset 3px 0 0 var(--teal); }
+/* Die halbtransparenten Zeilenfarben liegen sonst nicht auf der deckenden
+   Sticky-Zelle. Als Verlaufsschicht bleibt die Mischung identisch — und der
+   Teal-Balken der markierten Zeile wandert auf die Zelle, die ihn verdeckt. */
+tbody tr.klick-row:hover:not(.active-row) td.c-num {
+  background-image: linear-gradient(rgba(42,157,143,0.07), rgba(42,157,143,0.07));
+}
+tbody tr.active-row td.c-num {
+  background-image: linear-gradient(rgba(42,157,143,0.35), rgba(42,157,143,0.35));
+  box-shadow: inset 3px 0 0 var(--teal), inset 0 -1px 0 var(--border);
+}
+tbody tr.active-row td.cue:not(.muted) { font-weight: 700; color: var(--teal); }
+
+/* --- Eingaben --- */
+td.c-note textarea {
+  border: none; border-bottom: 1px solid var(--border); background: transparent;
+  width: 100%; font-size: 0.85rem; line-height: 1.35; color: var(--foreground); outline: none;
+  padding: 2px 4px; font-family: inherit; display: block;
+  resize: none; overflow: hidden; min-height: 1.9em; border-radius: 0;
+}
+td.c-note textarea:focus { border-bottom-color: var(--teal); }
+.f-in, .f-ta {
+  width: 100%; font-family: inherit; font-size: 0.85rem; color: var(--foreground);
+  background: var(--background); border: 1px solid var(--border); border-radius: 7px;
+  padding: 6px 8px; outline: none;
+}
+.f-in:focus, .f-ta:focus { border-color: var(--teal); }
+.f-ta { line-height: 1.35; resize: vertical; min-height: 42px; }
+.f-in.narrow { width: 64px; }
+
+/* --- Controls --- */
+.counter-btn {
+  min-width: 36px; height: 28px; border-radius: 7px; border: 2px solid var(--border);
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s; background: var(--card); font-size: 13px; font-weight: 600;
+  color: var(--muted-foreground); padding: 0 8px; font-family: inherit;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+.counter-btn.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+.cb-wrap { display: flex; justify-content: center; }
+.cb-wrap input[type="checkbox"] { display: none; }
+.cb-wrap label {
+  width: 28px; height: 28px; border-radius: 7px; border: 2px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; background: var(--card); font-size: 15px; color: #fff;
+  touch-action: manipulation;
+}
+.cb-wrap input:checked + label { background: var(--coral); border-color: var(--coral); }
+.cb-wrap input:checked + label::after { content: '✓'; }
+.cb-wrap.ueben input:checked + label { background: var(--teal); border-color: var(--teal); }
+.row-acts { display: flex; gap: 4px; justify-content: center; }
+.row-acts button {
+  width: 30px; height: 28px; border-radius: 7px; border: 1px solid var(--border);
+  background: var(--card); color: var(--muted-foreground); cursor: pointer;
+  font-size: 13px; line-height: 1; font-family: inherit; touch-action: manipulation;
+}
+.row-acts button.del { color: var(--danger); border-color: rgba(220,38,38,0.35); }
+.row-acts button:disabled { opacity: 0.35; cursor: default; }
+
+/* --- Buttons unter der Tabelle --- */
+.btns { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 16px; font-size: 0.82rem; color: var(--muted-foreground); cursor: pointer;
+  font-family: inherit; touch-action: manipulation;
+}
+.btn:hover { border-color: var(--muted-foreground); }
+.btn.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+.btn.primary:hover { background: var(--teal-dark); }
+.btn.add { background: var(--teal); border-color: var(--teal); color: #fff; font-weight: 600; }
+.btn.danger { color: var(--danger); border-color: rgba(220,38,38,0.35); }
+.empty {
+  background: var(--card); border: 1px dashed var(--border); border-radius: 12px;
+  padding: 28px 18px; text-align: center; color: var(--muted-foreground); font-size: 0.88rem;
+}
+.hint { margin: 14px 0 0; font-size: 0.78rem; color: var(--muted-foreground); line-height: 1.5; }
+.hint strong { font-weight: 600; }
+
+/* --- Liedübersicht --- */
+.song-link {
+  background: none; border: none; padding: 0; margin: 0; font: inherit; color: inherit;
+  text-align: left; cursor: pointer; text-decoration: underline;
+  text-decoration-color: var(--border); text-underline-offset: 3px; touch-action: manipulation;
+}
+.song-link:hover, .song-link:focus-visible { color: var(--teal); text-decoration-color: var(--teal); }
+.detail {
+  position: relative; background: var(--card); border-radius: 12px; box-shadow: var(--shadow);
+  padding: 20px 18px 22px;
+}
+.detail.done-both { background: var(--done-bg); }
+.detail-close {
+  position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground);
+  font-size: 1.3rem; line-height: 1; cursor: pointer; font-family: inherit; touch-action: manipulation;
+}
+.detail-close:hover { color: var(--foreground); border-color: var(--muted-foreground); }
+.detail h2 { margin: 0 48px 18px 0; font-size: 1.25rem; line-height: 1.3; }
+.detail h2 .d-nr { color: var(--muted-foreground); font-weight: 600; margin-right: 8px; }
+.d-stats { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 20px; }
+.d-stat { display: flex; align-items: center; gap: 10px; }
+.d-label {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.d-block { margin-bottom: 18px; }
+.d-block .d-label { display: block; margin-bottom: 6px; }
+.d-cue { font-size: 0.9rem; line-height: 1.45; }
+.d-cue.muted { color: var(--muted-foreground); }
+.d-note textarea { min-height: 110px; font-size: 0.9rem; resize: vertical; }
+.d-nav { display: flex; gap: 10px; margin-top: 16px; }
+.d-nav-btn {
+  flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--card); color: var(--foreground); font: inherit; font-size: 0.9rem;
+  text-align: left; cursor: pointer; touch-action: manipulation;
+}
+.d-nav-btn:hover, .d-nav-btn:focus-visible { border-color: var(--teal); color: var(--teal); }
+.d-nav-btn.next { justify-content: flex-end; text-align: right; }
+.d-nav-btn .d-arrow { font-size: 1.2rem; line-height: 1; flex: none; }
+.d-nav-btn .d-nav-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d-nav-btn .d-nr { color: var(--muted-foreground); font-weight: 600; margin-right: 6px; }
+.d-nav-spacer { flex: 1 1 0; }
+
+/* --- Dialog --- */
+dialog {
+  border: none; border-radius: 14px; padding: 0; background: var(--card); color: var(--foreground);
+  width: min(560px, calc(100vw - 32px)); box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+dialog::backdrop { background: rgba(0,0,0,0.5); }
+.dlg { padding: 18px; }
+.dlg h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.dlg p { margin: 0 0 12px; font-size: 0.82rem; color: var(--muted-foreground); }
+.dlg textarea {
+  width: 100%; min-height: 190px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px; border: 1px solid var(--border); border-radius: 8px; padding: 10px;
+  background: var(--background); color: var(--foreground); resize: vertical;
+}
+.dlg .btns { margin-top: 14px; }
+.dlg .status { font-size: 0.8rem; color: var(--teal); margin-left: auto; align-self: center; }
+.dlg .status.err { color: var(--danger); }
+
+
+/* Safari zoomt beim Fokussieren in jedes Feld unter 16px hinein und kommt nicht
+   von selbst wieder heraus. Nur auf Touch-Geräten hochsetzen, damit die
+   Darstellung am Rechner mit der Online-Checkliste übereinstimmt. */
+@media (hover: none) {
+  td.c-note textarea, .f-in, .f-ta, .head input, .d-note textarea,
+  .dlg textarea, .dlg input { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="page" id="app"></div>
+
+<dialog id="dlg"><div class="dlg" id="dlg-body"></div></dialog>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------------
+  // Eingebaute Songliste (Treffpunkt Brunnen). Nur der Auslieferungszustand —
+  // ab dem ersten Speichern lebt die Liste im localStorage und ist editierbar.
+  // ---------------------------------------------------------------------------
+  var DEFAULT_TITLE = "Treffpunkt Brunnen";
+  var DEFAULT_SUBTITLE = "Musical Adonia · Übe-Checkliste Band";
+
+  // ueben=false: Vollplayback, die Band übt es nicht — steht nur im Klick-Tab.
+  var DEFAULT_SONGS = [
+    { nr: "1", title: "Alle wollen (Vollplayback)", klick: "–", ueben: false },
+    { nr: "2", title: "Du gehörst nicht dazu (Teil 1)", klick: "MARIE: „Ja, das wäre gut.“", ueben: true },
+    { nr: "3", title: "Was siehst du im Spiegel?", klick: "HAUSMEISTER: „Warst du das mit der Wasserpfütze?“", ueben: true },
+    { nr: "4", title: "Schlecht reden", klick: "MAGDALENA: „Stellt sich die Frage, warum er sie loswerden wollte.“", ueben: true },
+    { nr: "5", title: "Du gehörst nicht dazu (Teil 2)", klick: "Krug fällt. (nur Ton)", ueben: true },
+    { nr: "6", title: "Gott ist näher", klick: "MANN: „Was kannst du eigentlich?“", ueben: true },
+    { nr: "7", title: "Warum tut er, was er tut? (Teil 1)", klick: "ANDREAS: „Leute, wir sind richtig fame.“", ueben: true },
+    { nr: "8", title: "Warum tut er, was er tut? (Teil 2)", klick: "PHILIPPUS: „Ähm…Moment mal…“", ueben: true },
+    { nr: "9", title: "Wer bist du, Jesus?", klick: "PETRUS: „Hauptsache wir wissen im Herzen, dass er das Richtige tut.“", ueben: true },
+    { nr: "10", title: "Jesus, meine Quelle", klick: "FRAU: „Was? Wie denn?“", ueben: true },
+    { nr: "11", title: "Von allen Seiten", klick: "FRAU: „Ich bin nicht verheiratet.“", ueben: true },
+    { nr: "12", title: "Dann gibt's Hoffnung", klick: "FRAU: „Kannst du mir dann eine Frage beantworten?“", ueben: true },
+    { nr: "13", title: "Da ist was anders", klick: "MAGDALENA: „Was ist denn bei der los?“", ueben: true },
+    { nr: "14", title: "Da ist was anders (Reprise)", klick: "MANN: „Was Besseres?“", ueben: true },
+    { nr: "15", title: "Was siehst du im Spiegel? (Reprise)", klick: "VOLK 1: „Jetzt glauben wir nicht nur deshalb an Jesus, weil du uns von ihm erzählt hast.“", ueben: true },
+    { nr: "16", title: "Heiler der Herzen", klick: "Pausenglocke", ueben: true },
+    { nr: "17", title: "Medley (Zugabe)", klick: "–", ueben: true },
+    { nr: "–", title: "Unser Land", klick: "–", ueben: true }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Speicher — jeder Zugriff gekapselt, damit ein blockierter localStorage
+  // (privater Modus, volles Kontingent) die App nicht mit einer Exception killt.
+  // ---------------------------------------------------------------------------
+  var NS = "adonia-checklist-v1-";
+  var store = {
+    ok: true,
+    mem: {},
+    get: function (k) {
+      try { return localStorage.getItem(NS + k); }
+      catch (e) { this.ok = false; return Object.prototype.hasOwnProperty.call(this.mem, k) ? this.mem[k] : null; }
+    },
+    set: function (k, v) {
+      this.mem[k] = v;
+      try { localStorage.setItem(NS + k, v); }
+      catch (e) { this.ok = false; }
+    }
+  };
+  (function probe() {
+    try { localStorage.setItem(NS + "probe", "1"); localStorage.removeItem(NS + "probe"); }
+    catch (e) { store.ok = false; }
+  })();
+
+  // ---------------------------------------------------------------------------
+  // Datenmodell v2 — Songliste und Fortschritt in einem Dokument, Songs mit
+  // stabiler ID, damit Löschen und Umsortieren den Fortschritt nicht verschiebt.
+  // ---------------------------------------------------------------------------
+  function uid() {
+    try {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    } catch (e) { /* ignorieren */ }
+    return "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function str(v) { return typeof v === "string" ? v : (v == null ? "" : String(v)); }
+
+  function defaultDoc() {
+    return {
+      v: 2,
+      title: DEFAULT_TITLE,
+      subtitle: DEFAULT_SUBTITLE,
+      songs: DEFAULT_SONGS.map(function (s) {
+        return {
+          id: uid(), nr: s.nr, title: s.title, klick: s.klick, ueben: s.ueben,
+          g: 0, s: false, r: 0, c: ""
+        };
+      })
+    };
+  }
+
+  function normSong(raw) {
+    var o = (raw && typeof raw === "object") ? raw : {};
+    var g = typeof o.g === "boolean" ? (o.g ? 1 : 0) : (Number(o.g) || 0);
+    var r = Number(o.r) || 0;
+    return {
+      id: (typeof o.id === "string" && o.id) ? o.id : uid(),
+      nr: str(o.nr),
+      title: str(o.title),
+      klick: str(o.klick),
+      ueben: o.ueben !== false,
+      g: g < 0 ? 0 : g,
+      s: !!o.s,
+      r: r < 0 ? 0 : (r > 5 ? 5 : r),
+      c: str(o.c)
+    };
+  }
+
+  // v1 war ein reines Fortschritts-Array in der Reihenfolge der geübten Songs.
+  function migrateV1(arr) {
+    var doc0 = defaultDoc();
+    var targets = doc0.songs.filter(function (s) { return s.ueben; });
+    if (arr.length !== targets.length) return doc0;
+    arr.forEach(function (old, i) {
+      var t = targets[i];
+      var o = (old && typeof old === "object") ? old : {};
+      t.g = typeof o.g === "boolean" ? (o.g ? 1 : 0) : (Number(o.g) || 0);
+      t.s = !!o.s;
+      t.r = Number(o.r) || 0;
+      t.c = str(o.c);
+    });
+    return doc0;
+  }
+
+  function parseDoc(value) {
+    if (value == null || value === "") return null;
+    var d = value;
+    if (typeof d === "string") {
+      try { d = JSON.parse(d); } catch (e) { return null; }
+    }
+    if (Array.isArray(d)) return migrateV1(d);
+    if (!d || typeof d !== "object" || !Array.isArray(d.songs)) return null;
+    return {
+      v: 2,
+      title: typeof d.title === "string" ? d.title : DEFAULT_TITLE,
+      subtitle: typeof d.subtitle === "string" ? d.subtitle : DEFAULT_SUBTITLE,
+      songs: d.songs.map(normSong)
+    };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Zustand
+  // ---------------------------------------------------------------------------
+  var doc = parseDoc(store.get("state")) || defaultDoc();
+  var view = store.get("view") === "klick" ? "klick" : "ueben";
+  var theme = store.get("theme") || "auto";
+  var edit = false;              // bewusst nicht persistiert
+  var activeRow = null;          // Song-ID der markierten Klick-Zeile
+  var detail = null;             // Song-ID der geöffneten Liedübersicht
+  var listScroll = 0;            // Scrollposition der Tabelle vor dem Öffnen
+  var hintOff = store.get("hint") === "off";
+
+  function save() { store.set("state", JSON.stringify(doc)); }
+  function byId(id) {
+    for (var i = 0; i < doc.songs.length; i++) if (doc.songs[i].id === id) return doc.songs[i];
+    return null;
+  }
+  function indexOfId(id) {
+    for (var i = 0; i < doc.songs.length; i++) if (doc.songs[i].id === id) return i;
+    return -1;
+  }
+
+  function applyTheme() {
+    if (theme === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", theme);
+  }
+  applyTheme();
+
+  function isTouch() {
+    try { return window.matchMedia("(hover: none)").matches; } catch (e) { return false; }
+  }
+
+  function isStandalone() {
+    if (window.navigator.standalone === true) return true;
+    try { return window.matchMedia("(display-mode: standalone)").matches; } catch (e) { return false; }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Rendern
+  // ---------------------------------------------------------------------------
+  var ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  function esc(v) {
+    return str(v).replace(/[&<>"']/g, function (c) { return ESCAPES[c]; });
+  }
+
+  var app = document.getElementById("app");
+
+  function render() {
+    if (detail && !byId(detail)) detail = null;
+    app.innerHTML = headHtml() + barsHtml() +
+      (detail ? detailHtml(byId(detail))
+        : tabsHtml() + (view === "ueben" ? uebenHtml() : klickHtml()));
+    autosizeNotes();
+  }
+
+  function autosize(el) {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }
+  function autosizeNotes() {
+    app.querySelectorAll("td.c-note textarea").forEach(autosize);
+  }
+  window.addEventListener("resize", autosizeNotes);
+  window.addEventListener("load", autosizeNotes);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(autosizeNotes);
+
+  function headHtml() {
+    var label = theme === "auto" ? "🌗 Auto" : (theme === "light" ? "☀️ Hell" : "🌙 Dunkel");
+    var text = edit
+      ? '<input class="t-title" data-meta="title" value="' + esc(doc.title) + '" placeholder="Titel">' +
+        '<input data-meta="subtitle" value="' + esc(doc.subtitle) + '" placeholder="Untertitel">'
+      : '<h1>' + esc(doc.title || "Übe-Checkliste") + '</h1>' +
+        (doc.subtitle ? '<p class="subtitle">' + esc(doc.subtitle) + '</p>' : '');
+    return '<div class="head"><div class="head-text">' + text + '</div>' +
+      '<button class="theme-btn" data-act="theme">' + label + '</button></div>';
+  }
+
+  function barsHtml() {
+    var out = "";
+    if (!store.ok) {
+      out += '<div class="bar bar-warn"><p><strong>Speichern nicht möglich.</strong> Dieser Browser ' +
+        'lässt keinen lokalen Speicher zu (privater Modus?). Änderungen gehen beim Schließen verloren — ' +
+        'sichere sie über „Sichern“.</p></div>';
+    }
+    if (!hintOff && store.ok && !isStandalone()) {
+      out += '<div class="bar bar-install"><p>Tipp: <strong>Teilen → Zum Home-Bildschirm</strong>. ' +
+        'Dann bleibt dein Fortschritt dauerhaft gespeichert und die Liste funktioniert auch ohne Internet.</p>' +
+        '<button data-act="hint-off" title="Hinweis ausblenden">×</button></div>';
+    }
+    return out;
+  }
+
+  function tabsHtml() {
+    return '<div class="bars"><div class="toggle">' +
+      '<button data-act="view" data-view="ueben"' + (view === "ueben" ? ' class="active"' : '') + '>Übe-Checkliste</button>' +
+      '<button data-act="view" data-view="klick"' + (view === "klick" ? ' class="active"' : '') + '>Klick &amp; Einsatz</button>' +
+      '</div><button class="edit-btn' + (edit ? " on" : "") + '" data-act="edit" ' +
+      'title="' + (edit ? "Bearbeiten beenden" : "Songliste bearbeiten") + '" ' +
+      'aria-label="' + (edit ? "Bearbeiten beenden" : "Songliste bearbeiten") + '">' +
+      (edit ? "✓" : "✏️") + '</button></div>';
+  }
+
+  function emptyHtml() {
+    return '<div class="empty">Noch keine Songs.' +
+      (edit ? ' Tippe unten auf „+ Song hinzufügen“.' : ' Tippe auf „✏️ Bearbeiten“ und lege einen an.') +
+      '</div>';
+  }
+
+  function orderCell(i) {
+    return '<td class="c-ord center"><div class="row-acts">' +
+      '<button data-act="up" title="Nach oben"' + (i === 0 ? " disabled" : "") + '>↑</button>' +
+      '<button data-act="down" title="Nach unten"' + (i === doc.songs.length - 1 ? " disabled" : "") + '>↓</button>' +
+      '<button class="del" data-act="del" title="Song löschen">🗑</button>' +
+      '</div></td>';
+  }
+
+  function noteCell(s) {
+    return '<td class="c-note">' +
+      '<textarea rows="1" placeholder="Notiz…" data-field="c">' + esc(s.c) + '</textarea></td>';
+  }
+
+  function songCell(s) {
+    return '<td class="c-song"><button class="song-link" data-act="detail" ' +
+      'title="Liedübersicht öffnen">' + esc(s.title || "Ohne Titel") + '</button></td>';
+  }
+
+  // Liest und schreibt dieselben Songdaten wie die Tabellen — Änderungen hier
+  // sind deshalb nach dem Schließen sofort dort zu sehen und umgekehrt.
+  function detailHtml(s) {
+    var both = s.g > 0 && s.s;
+    return '<div class="detail' + (both ? ' done-both' : '') + '" data-id="' + esc(s.id) + '">' +
+      '<button class="detail-close" data-act="detail-close" title="Schließen" aria-label="Schließen">×</button>' +
+      '<h2>' + (s.nr ? '<span class="d-nr">' + esc(s.nr) + '</span>' : '') +
+        esc(s.title || "Ohne Titel") + '</h2>' +
+      '<div class="d-stats">' +
+        '<div class="d-stat"><span class="d-label">Geübt</span>' +
+          '<button class="counter-btn' + (s.g > 0 ? " active" : "") + '" data-act="counter" ' +
+          'title="Tippen = +1, lange drücken = zurücksetzen">' + s.g + '×</button></div>' +
+        '<div class="d-stat"><span class="d-label">Sitzt</span><div class="cb-wrap">' +
+          '<input type="checkbox" id="dcb-' + esc(s.id) + '" data-act="sitzt"' + (s.s ? " checked" : "") + '>' +
+          '<label for="dcb-' + esc(s.id) + '"></label></div></div>' +
+      '</div>' +
+      '<div class="d-block"><span class="d-label">Klick an</span>' +
+        '<div class="d-cue' + (isBlank(s.klick) ? " muted" : "") + '">' + esc(s.klick || "–") + '</div></div>' +
+      '<div class="d-block d-note"><label class="d-label" for="dnote-' + esc(s.id) + '">Kommentar</label>' +
+        '<textarea class="f-ta" id="dnote-' + esc(s.id) + '" data-field="c" placeholder="Notiz…">' +
+        esc(s.c) + '</textarea></div>' +
+      '</div>' + detailNavHtml(s);
+  }
+
+  // Vor/Zurück folgt der Liste, aus der die Liedübersicht geöffnet wurde.
+  function navList() {
+    if (view === "ueben" && !edit) return doc.songs.filter(function (s) { return s.ueben; });
+    return doc.songs;
+  }
+  function navBtn(s, dir) {
+    var label = (s.nr ? '<span class="d-nr">' + esc(s.nr) + '</span>' : '') + esc(s.title || "Ohne Titel");
+    var arrow = '<span class="d-arrow" aria-hidden="true">' + (dir === "prev" ? "←" : "→") + '</span>';
+    var txt = '<span class="d-nav-txt">' + label + '</span>';
+    return '<button class="d-nav-btn ' + dir + '" data-act="detail-go" data-target="' + esc(s.id) + '" ' +
+      'title="' + (dir === "prev" ? "Vorheriges Lied" : "Nächstes Lied") + '">' +
+      (dir === "prev" ? arrow + txt : txt + arrow) + '</button>';
+  }
+  function detailNavHtml(s) {
+    var list = navList();
+    var i = -1;
+    for (var k = 0; k < list.length; k++) if (list[k].id === s.id) { i = k; break; }
+    if (i < 0) return "";
+    var prev = i > 0 ? list[i - 1] : null;
+    var next = i < list.length - 1 ? list[i + 1] : null;
+    if (!prev && !next) return "";
+    return '<div class="d-nav">' +
+      (prev ? navBtn(prev, "prev") : '<span class="d-nav-spacer"></span>') +
+      (next ? navBtn(next, "next") : '<span class="d-nav-spacer"></span>') +
+      '</div>';
+  }
+
+  function openDetail(id) {
+    listScroll = window.scrollY || 0;
+    detail = id;
+    render();
+    window.scrollTo(0, 0);
+  }
+  function closeDetail() {
+    detail = null;
+    render();
+    window.scrollTo(0, listScroll);
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && detail && !(dlg.open)) closeDetail();
+  });
+
+  function editHeadCells(s) {
+    return '<td class="c-num"><input class="f-in narrow" data-field="nr" value="' +
+        esc(s.nr) + '" placeholder="#"></td>' +
+      '<td class="c-song"><input class="f-in" data-field="title" value="' +
+        esc(s.title) + '" placeholder="Songtitel"></td>';
+  }
+
+  function uebenHtml() {
+    var practiced = doc.songs.filter(function (s) { return s.ueben; });
+    var done = practiced.filter(function (s) { return s.g > 0 && s.s; }).length;
+    var pct = practiced.length ? (done / practiced.length) * 100 : 0;
+
+    var out = "";
+    if (!edit) {
+      out += '<div class="progress"><div class="progress-label">' + done + ' von ' + practiced.length +
+        ' Liedern komplett geübt</div><div class="progress-bar"><div class="progress-fill" style="width:' +
+        pct + '%"></div></div></div>';
+    }
+
+    if (!doc.songs.length || (!edit && !practiced.length)) {
+      return out + emptyHtml() + footerHtml();
+    }
+
+    if (edit) {
+      out += '<div class="wrap"><table class="tbl-ueben tbl-edit"><thead><tr>' +
+        '<th>#</th><th>Lied</th><th class="center">Übt die Band</th><th class="center">Sortieren</th>' +
+        '</tr></thead><tbody>';
+      doc.songs.forEach(function (s, i) {
+        out += '<tr data-id="' + esc(s.id) + '">' + editHeadCells(s) +
+          '<td class="c-ueben center"><div class="cb-wrap ueben">' +
+            '<input type="checkbox" id="ub-' + esc(s.id) + '" data-act="ueben"' + (s.ueben ? " checked" : "") + '>' +
+            '<label for="ub-' + esc(s.id) + '"></label></div></td>' +
+          orderCell(i) + '</tr>';
+      });
+      out += '</tbody></table></div>';
+    } else {
+      out += '<div class="wrap"><table class="tbl-ueben"><thead><tr>' +
+        '<th>#</th><th>Lied</th><th class="center compact">Geübt</th><th class="center compact">Sitzt</th>' +
+        '<th>Kommentar</th></tr></thead><tbody>';
+      practiced.forEach(function (s) {
+        var both = s.g > 0 && s.s;
+        out += '<tr data-id="' + esc(s.id) + '"' + (both ? ' class="done-both"' : '') + '>' +
+          '<td class="c-num">' + esc(s.nr) + '</td>' +
+          songCell(s) +
+          '<td class="c-cnt center compact"><button class="counter-btn' + (s.g > 0 ? " active" : "") +
+            '" data-act="counter" title="Tippen = +1, lange drücken = zurücksetzen">' + s.g + '×</button></td>' +
+          '<td class="c-chk center compact"><div class="cb-wrap">' +
+            '<input type="checkbox" id="cb-' + esc(s.id) + '" data-act="sitzt"' + (s.s ? " checked" : "") + '>' +
+            '<label for="cb-' + esc(s.id) + '"></label></div></td>' +
+          noteCell(s) + '</tr>';
+      });
+      out += '</tbody></table></div>';
+    }
+
+    return out + footerHtml();
+  }
+
+  function klickHtml() {
+    if (!doc.songs.length) return emptyHtml() + footerHtml();
+
+    var out = "";
+    if (edit) {
+      out += '<div class="wrap"><table class="tbl-klick tbl-edit"><thead><tr>' +
+        '<th>#</th><th>Lied</th><th>Klick an</th><th class="center">Sortieren</th>' +
+        '</tr></thead><tbody>';
+      doc.songs.forEach(function (s, i) {
+        out += '<tr data-id="' + esc(s.id) + '">' + editHeadCells(s) +
+          '<td class="c-klick"><textarea class="f-ta" rows="2" data-field="klick" ' +
+            'placeholder="Stichwort, bei dem der Klick startet">' + esc(s.klick) + '</textarea></td>' +
+          orderCell(i) + '</tr>';
+      });
+      out += '</tbody></table></div>';
+    } else {
+      out += '<div class="wrap"><table class="tbl-klick"><thead><tr>' +
+        '<th>#</th><th>Lied</th><th>Klick an</th><th>Kommentar</th></tr></thead><tbody>';
+      doc.songs.forEach(function (s) {
+        var cls = "klick-row" + (activeRow === s.id ? " active-row" : "");
+        out += '<tr class="' + cls + '" data-id="' + esc(s.id) + '">' +
+          '<td class="c-num">' + esc(s.nr) + '</td>' +
+          songCell(s) +
+          '<td class="c-klick cue' + (isBlank(s.klick) ? " muted" : "") + '">' +
+            esc(s.klick || "–") + '</td>' +
+          noteCell(s) + '</tr>';
+      });
+      out += '</tbody></table></div>';
+    }
+
+    return out + footerHtml();
+  }
+
+  function isBlank(v) { return !v || v === "–" || v === "-"; }
+
+  function footerHtml() {
+    if (edit) {
+      return '<div class="btns">' +
+        '<button class="btn add" data-act="add">+ Song hinzufügen</button>' +
+        '<button class="btn" data-act="restore">↺ Original-Songliste</button>' +
+        '<button class="btn danger" data-act="clear">Alle Songs löschen</button>' +
+        '</div>';
+    }
+    return '<div class="btns">' +
+      '<button class="btn primary" data-act="export">💾 Sichern</button>' +
+      '<button class="btn" data-act="import">📥 Laden</button>' +
+      (view === "ueben" ? '<button class="btn" data-act="reset">↺ Fortschritt zurücksetzen</button>' : '') +
+      '</div>' +
+      // Der Reset des Zählers ist sonst nicht auffindbar — ein langer Druck
+      // verrät sich von selbst nicht.
+      (view === "ueben"
+        ? '<p class="hint">Tipp: Lange auf ein <strong>Geübt</strong>-Feld drücken setzt den Zähler wieder auf 0.</p>'
+        : '');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Ereignisse — Delegation, damit Neurendern keine Listener verwaist
+  // ---------------------------------------------------------------------------
+
+  // Texteingaben rendern bewusst NICHT neu: sonst verliert das Feld bei jedem
+  // Tastendruck Fokus und Cursorposition.
+  app.addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.dataset.meta) {
+      doc[el.dataset.meta] = el.value;
+      save();
+      return;
+    }
+    var field = el.dataset.field;
+    if (!field) return;
+    if (el.tagName === "TEXTAREA" && el.closest("td.c-note")) autosize(el);
+    var row = el.closest("[data-id]");
+    var song = row && byId(row.dataset.id);
+    if (!song) return;
+    song[field] = el.value;
+    save();
+  });
+
+  app.addEventListener("change", function (e) {
+    var el = e.target;
+    var act = el.dataset.act;
+    if (act !== "sitzt" && act !== "ueben") return;
+    var row = el.closest("[data-id]");
+    var song = row && byId(row.dataset.id);
+    if (!song) return;
+    if (act === "sitzt") song.s = el.checked;
+    else song.ueben = el.checked;
+    save();
+    render();
+  });
+
+  // Langes Drücken auf dem Zähler setzt zurück. Auf iOS reicht das Unterdrücken
+  // von contextmenu nicht — dafür sorgt -webkit-touch-callout im CSS.
+  var lpTimer = null, lpFired = false;
+  app.addEventListener("pointerdown", function (e) {
+    var btn = e.target.closest('[data-act="counter"]');
+    if (!btn) return;
+    lpFired = false;
+    var row = btn.closest("[data-id]");
+    var id = row && row.dataset.id;
+    lpTimer = setTimeout(function () {
+      lpTimer = null;
+      lpFired = true;
+      var song = byId(id);
+      if (song && song.g > 0) { song.g = 0; save(); render(); }
+    }, 500);
+  });
+  function cancelLongPress() { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } }
+  app.addEventListener("pointerup", cancelLongPress);
+  app.addEventListener("pointercancel", cancelLongPress);
+  app.addEventListener("pointerleave", cancelLongPress, true);
+  app.addEventListener("contextmenu", function (e) {
+    if (e.target.closest('[data-act="counter"]')) e.preventDefault();
+  });
+
+  // Kante an der festgehaltenen Nummernspalte einblenden, sobald quer gescrollt
+  // wird. scroll steigt nicht auf, deshalb in der Capture-Phase — so überlebt
+  // der Listener jedes Neurendern der Tabelle.
+  app.addEventListener("scroll", function (e) {
+    var w = e.target;
+    if (w && w.classList && w.classList.contains("wrap")) {
+      w.classList.toggle("scrolled-x", w.scrollLeft > 0);
+    }
+  }, true);
+
+  app.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-act]");
+    var act = el ? el.dataset.act : null;
+
+    // Zeilenmarkierung im Klick-Tab: nur, wenn nicht auf ein Bedienelement getippt
+    if (!act) {
+      var row = e.target.closest("tr.klick-row");
+      if (row && !e.target.closest("input, textarea, button, label")) {
+        activeRow = activeRow === row.dataset.id ? null : row.dataset.id;
+        render();
+      }
+      return;
+    }
+
+    var tr = el.closest("[data-id]");
+    var id = tr ? tr.dataset.id : null;
+    var song = id ? byId(id) : null;
+
+    switch (act) {
+      case "view":
+        view = el.dataset.view;
+        store.set("view", view);
+        render();
+        break;
+
+      case "edit":
+        edit = !edit;
+        render();
+        break;
+
+      case "theme":
+        theme = theme === "auto" ? "light" : (theme === "light" ? "dark" : "auto");
+        store.set("theme", theme);
+        applyTheme();
+        render();
+        break;
+
+      case "hint-off":
+        hintOff = true;
+        store.set("hint", "off");
+        render();
+        break;
+
+      case "detail":
+        if (song) openDetail(id);
+        break;
+
+      case "detail-close":
+        closeDetail();
+        break;
+
+      case "detail-go":
+        if (byId(el.dataset.target)) {
+          detail = el.dataset.target;
+          render();
+          window.scrollTo(0, 0);
+        }
+        break;
+
+      case "counter":
+        if (lpFired) { lpFired = false; break; }
+        if (song) { song.g += 1; save(); render(); }
+        break;
+
+
+      case "up":
+      case "down":
+        moveSong(id, act === "up" ? -1 : 1);
+        break;
+
+      case "del":
+        if (song && window.confirm("„" + (song.title || "Dieser Song") + "“ wirklich löschen?")) {
+          doc.songs.splice(indexOfId(id), 1);
+          if (activeRow === id) activeRow = null;
+          save();
+          render();
+        }
+        break;
+
+      case "add":
+        doc.songs.push(normSong({ id: uid(), nr: "", title: "", ueben: true }));
+        save();
+        render();
+        focusLastTitle();
+        break;
+
+      case "restore":
+        if (window.confirm("Die eingebaute Songliste „" + DEFAULT_TITLE + "“ wiederherstellen? Deine aktuelle Liste und der Fortschritt gehen dabei verloren.")) {
+          doc = defaultDoc();
+          activeRow = null;
+          save();
+          render();
+        }
+        break;
+
+      case "clear":
+        if (window.confirm("Wirklich alle Songs löschen? Danach ist die Liste leer.")) {
+          doc.songs = [];
+          activeRow = null;
+          save();
+          render();
+        }
+        break;
+
+      case "reset":
+        if (window.confirm("Wirklich den kompletten Fortschritt zurücksetzen? Die Notizen bleiben erhalten.")) {
+          doc.songs.forEach(function (s) { s.g = 0; s.s = false; s.r = 0; });
+          save();
+          render();
+        }
+        break;
+
+      case "export": openExport(); break;
+      case "import": openImport(); break;
+    }
+  });
+
+  function moveSong(id, delta) {
+    var i = indexOfId(id);
+    var j = i + delta;
+    if (i < 0 || j < 0 || j >= doc.songs.length) return;
+    var tmp = doc.songs[i];
+    doc.songs[i] = doc.songs[j];
+    doc.songs[j] = tmp;
+    save();
+    render();
+  }
+
+  function focusLastTitle() {
+    var inputs = app.querySelectorAll('input[data-field="title"]');
+    var last = inputs[inputs.length - 1];
+    if (last) last.focus();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Sichern / Laden — der Textweg ist der verlässliche: <a download> löst im
+  // iOS-Standalone-Modus nicht immer aus.
+  // ---------------------------------------------------------------------------
+  var dlg = document.getElementById("dlg");
+  var dlgBody = document.getElementById("dlg-body");
+
+  function openDialog(html) {
+    dlgBody.innerHTML = html;
+    if (typeof dlg.showModal === "function") dlg.showModal();
+    else dlg.setAttribute("open", "");
+  }
+  function closeDialog() {
+    if (typeof dlg.close === "function") dlg.close();
+    else dlg.removeAttribute("open");
+  }
+
+  function fileName() {
+    var base = str(doc.title).replace(/[^\wÀ-ÿ -]/g, "").trim().replace(/\s+/g, "-");
+    var d = new Date();
+    var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+    return (base || "uebe-checkliste") + "-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + ".json";
+  }
+
+  function openExport() {
+    var json = JSON.stringify(doc, null, 2);
+    openDialog(
+      "<h2>Sichern</h2>" +
+      "<p>Diese Sicherung enthält die komplette Songliste <em>und</em> deinen Fortschritt. " +
+      "Kopiere den Text und leg ihn irgendwo ab, oder lade ihn als Datei herunter.</p>" +
+      '<textarea id="ex-ta" readonly></textarea>' +
+      '<div class="btns">' +
+        // autofocus bewusst auf dem Knopf: showModal() setzt den Fokus sonst
+        // selbst auf das erste bedienbare Element — die Textfläche — und Safari
+        // zieht die Ansicht dort hinein.
+        '<button class="btn primary" data-dlg="copy" autofocus>Text kopieren</button>' +
+        '<button class="btn" data-dlg="download">Als Datei</button>' +
+        '<button class="btn" data-dlg="close">Schließen</button>' +
+        '<span class="status" id="ex-status"></span>' +
+      "</div>"
+    );
+    var ta = document.getElementById("ex-ta");
+    ta.value = json;
+    // Auf Touch-Geräten bewusst kein Fokus: Safari zieht die Ansicht sonst
+    // schon beim Öffnen des Dialogs in das Feld hinein. Am Rechner ist die
+    // Vorauswahl praktisch, dort kostet sie nichts.
+    if (!isTouch()) {
+      ta.focus();
+      ta.setSelectionRange(0, ta.value.length);
+    }
+  }
+
+  function openImport() {
+    openDialog(
+      "<h2>Laden</h2>" +
+      "<p>Wähle eine Sicherungsdatei oder füge den gesicherten Text ein. " +
+      "<strong>Achtung:</strong> Songliste und Fortschritt werden dabei ersetzt.</p>" +
+      '<input type="file" accept="application/json,.json,.txt" id="im-file" style="margin-bottom:10px">' +
+      '<textarea id="im-ta" placeholder="…oder JSON hier einfügen"></textarea>' +
+      '<div class="btns">' +
+        '<button class="btn primary" data-dlg="apply">Übernehmen</button>' +
+        '<button class="btn" data-dlg="close">Abbrechen</button>' +
+        '<span class="status" id="im-status"></span>' +
+      "</div>"
+    );
+    document.getElementById("im-file").addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () { document.getElementById("im-ta").value = String(reader.result || ""); };
+      reader.onerror = function () { setStatus("im-status", "Datei konnte nicht gelesen werden.", true); };
+      reader.readAsText(f);
+    });
+  }
+
+  function legacyCopy(ta) {
+    var done = false;
+    try {
+      ta.focus();
+      ta.setSelectionRange(0, ta.value.length);
+      done = document.execCommand("copy");
+    } catch (err) { done = false; }
+    setStatus("ex-status", done ? "✓ Kopiert" : "Bitte von Hand markieren.", !done);
+  }
+
+  function setStatus(id, text, isError) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "status" + (isError ? " err" : "");
+  }
+
+  dlg.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-dlg]");
+    if (!el) return;
+
+    if (el.dataset.dlg === "close") { closeDialog(); return; }
+
+    if (el.dataset.dlg === "copy") {
+      var ta = document.getElementById("ex-ta");
+      // Zwischenablage-API zuerst: sie braucht keinen Fokus im Textfeld und
+      // lässt die Ansicht damit in Ruhe. Der Weg über execCommand muss
+      // markieren und zieht auf dem iPhone die Ansicht ins Feld — nur Rückfall.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(
+          function () { setStatus("ex-status", "✓ Kopiert"); },
+          function () { legacyCopy(ta); }
+        );
+      } else {
+        legacyCopy(ta);
+      }
+      return;
+    }
+
+    if (el.dataset.dlg === "download") {
+      try {
+        var blob = new Blob([document.getElementById("ex-ta").value], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = fileName();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        setStatus("ex-status", "Download gestartet");
+      } catch (err) {
+        setStatus("ex-status", "Download nicht möglich — nimm den Text.", true);
+      }
+      return;
+    }
+
+    if (el.dataset.dlg === "apply") {
+      var raw = document.getElementById("im-ta").value.trim();
+      if (!raw) { setStatus("im-status", "Nichts zum Laden da.", true); return; }
+      var parsed = parseDoc(raw);
+      if (!parsed) { setStatus("im-status", "Das ist keine gültige Sicherung.", true); return; }
+      doc = parsed;
+      activeRow = null;
+      save();
+      render();
+      closeDialog();
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // Start
+  // ---------------------------------------------------------------------------
+  render();
+  save();
+
+  // Scope bewusst ohne abschließenden Schrägstrich: der Vorgabewert wäre
+  // /install/adonia-checklist/ und würde ausgerechnet die weitergegebene URL
+  // /install/adonia-checklist nicht abdecken. Erlaubt wird der weitere Scope
+  // über den Service-Worker-Allowed-Header in next.config.ts.
+  if ("serviceWorker" in navigator && window.isSecureContext) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/install/adonia-checklist/sw.js", { scope: "/install/adonia-checklist" })
+        .catch(function () { /* ohne Worker läuft die App weiter, nur nicht offline */ });
+    });
+  }
+})();
+</script>
+<script async src="/.netlify/scripts/ar" data-netlify-deploy-id="6abbb0131cdd6d000819e4ad" data-netlify-site-id="a15c41bd-4c3e-4ef6-a500-44a889079b75" data-agent-runner-id="6abbaf70a1a7354ca30b5b36"></script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=owner-private" data-nf-variant="owner-private" data-netlify-site-id="a15c41bd-4c3e-4ef6-a500-44a889079b75" data-app-host="app.netlify.com"></script>
