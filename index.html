@@ -177,7 +177,7 @@ td.cue.muted { color: var(--muted-foreground); }
 tbody tr.done-both { background: var(--done-bg); }
 tbody tr.done-both td { color: var(--done-fg); }
 tbody tr.done-both td.c-num { color: var(--done-num); background: var(--done-bg); }
-tbody tr.done-both td.c-note textarea { color: var(--done-fg); border-bottom-color: var(--done-border); }
+tbody tr.done-both .note-prev { color: var(--done-fg); border-bottom-color: var(--done-border); }
 
 tbody tr.klick-row { cursor: pointer; }
 tbody tr.klick-row:hover:not(.active-row) { background: rgba(42,157,143,0.07); }
@@ -195,13 +195,15 @@ tbody tr.active-row td.c-num {
 tbody tr.active-row td.cue:not(.muted) { font-weight: 700; color: var(--teal); }
 
 /* --- Eingaben --- */
-td.c-note textarea {
-  border: none; border-bottom: 1px solid var(--border); background: transparent;
-  width: 100%; font-size: 0.85rem; line-height: 1.35; color: var(--foreground); outline: none;
-  padding: 2px 4px; font-family: inherit; display: block;
-  resize: none; overflow: hidden; min-height: 1.9em; border-radius: 0;
+.note-prev {
+  display: block; width: 100%; max-width: 240px; box-sizing: border-box; text-align: left;
+  border: none; border-bottom: 1px solid var(--border); background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 0.85rem; line-height: 1.35; color: var(--foreground);
+  padding: 2px 4px; min-height: 1.9em; border-radius: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-td.c-note textarea:focus { border-bottom-color: var(--teal); }
+.note-prev.empty { color: var(--muted-foreground); }
+.note-prev:focus-visible { outline: none; border-bottom-color: var(--teal); }
 .f-in, .f-ta {
   width: 100%; font-family: inherit; font-size: 0.85rem; color: var(--foreground);
   background: var(--background); border: 1px solid var(--border); border-radius: 7px;
@@ -328,7 +330,7 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
    von selbst wieder heraus. Nur auf Touch-Geräten hochsetzen, damit die
    Darstellung am Rechner mit der Online-Checkliste übereinstimmt. */
 @media (hover: none) {
-  td.c-note textarea, .f-in, .f-ta, .head input, .d-note textarea,
+  td.c-note .note-prev, .f-in, .f-ta, .head input, .d-note textarea,
   .dlg textarea, .dlg input { font-size: 16px; }
 }
 </style>
@@ -530,7 +532,7 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
     el.style.height = el.scrollHeight + "px";
   }
   function autosizeNotes() {
-    app.querySelectorAll("td.c-note textarea").forEach(autosize);
+    /* feste Zeilenhöhe – kein Autosize in der Tabelle */
   }
   window.addEventListener("resize", autosizeNotes);
   window.addEventListener("load", autosizeNotes);
@@ -587,8 +589,9 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
   }
 
   function noteCell(s) {
-    return '<td class="c-note">' +
-      '<textarea rows="1" placeholder="Notiz…" data-field="c">' + esc(s.c) + '</textarea></td>';
+    var t = (s.c || "").replace(/\s*\n\s*/g, " ").trim();
+    return '<td class="c-note"><button class="note-prev' + (t ? "" : " empty") + '" data-act="detail" ' +
+      'title="Kommentar in der Liedübersicht öffnen">' + (t ? esc(t) : "Notiz…") + '</button></td>';
   }
 
   function songCell(s) {
@@ -790,7 +793,6 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
     }
     var field = el.dataset.field;
     if (!field) return;
-    if (el.tagName === "TEXTAREA" && el.closest("td.c-note")) autosize(el);
     var row = el.closest("[data-id]");
     var song = row && byId(row.dataset.id);
     if (!song) return;
