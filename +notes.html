@@ -432,6 +432,18 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
   td.c-note .note-prev, .f-in, .f-ta, .head input, .d-note textarea,
   .dlg textarea, .dlg input { font-size: 16px; }
 }
+
+  /* Notiz-PDF-Druckansicht */
+  .note-print-sheet { display: none; }
+  @media print {
+    @page { margin: 18mm 16mm; }
+    body > * { display: none !important; }
+    body > .note-print-sheet { display: block !important; position: static !important; width: auto !important; margin: 0 !important; padding: 0 !important; color: #111 !important; background: #fff !important; font-family: Arial, Helvetica, sans-serif !important; font-size: 11pt !important; line-height: 1.5 !important; }
+    .note-print-sheet h1,.note-print-sheet h2,.note-print-sheet h3,.note-print-sheet h4,.note-print-sheet h5,.note-print-sheet h6 { break-after: avoid; page-break-after: avoid; }
+    .note-print-sheet pre,.note-print-sheet blockquote,.note-print-sheet table { break-inside: avoid; page-break-inside: avoid; }
+    .note-print-sheet img { max-width: 100%; }
+    .note-print-sheet .print-title { margin: 0 0 18px; font-size: 20pt; line-height: 1.2; border-bottom: 1px solid #bbb; padding-bottom: 8px; }
+  }
 </style>
 </head>
 <body>
@@ -1191,6 +1203,9 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
         noteMode = el.dataset.mode === "preview" ? "preview" : "edit";
         render();
         break;
+      case "note-pdf-export":
+        exportNotePdf();
+        break;
       case "md-insert":
         insertMarkdown(el.dataset.md);
         break;
@@ -1247,6 +1262,24 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
   // Notizen — nach Name sortiert, Text in Markdown, optional eine PDF je Notiz
   // (nutzt denselben PDF-Speicher und dieselbe Anzeige wie die Lieder).
   // ---------------------------------------------------------------------------
+  function exportNotePdf() {
+    var n = noteById(noteDetail);
+    if (!n) return;
+    var old = document.querySelector('.note-print-sheet');
+    if (old) old.remove();
+    var sheet = document.createElement('div');
+    sheet.className = 'note-print-sheet';
+    sheet.innerHTML = '<div class="print-title">' + esc(n.title || "Ohne Titel") + '</div>' +
+      '<div class="md">' + (str(n.text).trim() ? mdRender(n.text, 0) : '<p>Keine Inhalte.</p>') + '</div>';
+    document.body.appendChild(sheet);
+    var cleanup = function () {
+      if (sheet.parentNode) sheet.parentNode.removeChild(sheet);
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+    window.setTimeout(function () { window.print(); }, 50);
+  }
+
   function noteById(id) {
     for (var i = 0; i < doc.notes.length; i++) if (doc.notes[i].id === id) return doc.notes[i];
     return null;
@@ -1367,6 +1400,7 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
       '</div></div>' +
       '<div class="d-block">' + body + '</div>' +
       '<div class="d-block" id="pdf-slot"></div>' +
+      '<div class="btns"><button class="btn primary" data-act="note-pdf-export">📄 Als PDF exportieren</button></div>' +
       '<div class="btns"><button class="btn danger" data-act="note-del">Notiz löschen</button></div>' +
       '</div>' + noteNavHtml(n);
   }
