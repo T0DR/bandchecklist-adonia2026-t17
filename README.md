@@ -6,4 +6,5 @@ Hallo alle Bandinteressierte von Adonia. Ich bin Samu und wieder eine Bandleitun
 ## Folgende Versionen: 
 
 ### Die ursprüngliche -> https://t0dr.github.io/bandchecklist-adonia2026-t17/
-### Detailansicht mit PDF -> https://t0dr.github.io/bandchecklist-adonia2026-t17/
+### Detailansicht mit PDF -> https://t0dr.github.io/bandchecklist-adonia2026-t17/bigger-claude.html
+### Mit zus. Notizen -> https://t0dr.github.io/bandchecklist-adonia2026-t17/+notes.html
